@@ -1,0 +1,55 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.hexagram {
+  box-shadow: 0px 0px 2mm lightgray;
+  padding: 0.7cm;
+  margin: 0.5cm;
+  text-align: center;
+  display: inline-block;
+  background-color: white;
+}
+
+.hexagram_lines {
+  list-style-type: none;
+}
+
+.hexagram_lines li {
+  padding-bottom: 0.6cm;
+}
+
+.hexagram_name {
+  font-size: 13pt;
+}
+
+.hexagram_line {
+  width: 4cm;
+  height: 0.5cm;
+}
+
+.hexagram_line * {
+  width: 33.33%;
+  height: 100%;
+  display: inline-block;
+}
+
+.hexagram_line .filled {
+  background-color: black;
+}
+
+.hexagram_line .empty {
+  background-color: white;
+}
+
+.hexagram_generator table {
+  padding: 0.5cm;
+  padding-top: 0;
+}
+
+.hexagram_generator table tr td {
+  padding: 0.2cm;
+  font-size: 0.5cm;
+  text-align: center;
+}

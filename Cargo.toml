@@ -1,0 +1,9 @@
+[package]
+name = "iching_online"
+version = "0.1.0"
+authors = ["Vinorgrodskiy Serafim <fimmind@mail.ru>"]
+edition = "2018"
+
+[dependencies]
+yew = "0.17.4"
+rand = {version = "0.7", features = ["wasm-bindgen"]}
