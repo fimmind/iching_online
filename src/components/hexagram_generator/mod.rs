@@ -27,8 +27,7 @@ impl HexagramGenerator {
                 1 | 3 => LineType::Yang,
                 0 | 2 => LineType::Yin,
                 _ => unreachable!(),
-            })
-            .collect();
+            });
         Hexagram::from_lines(lines)
     }
 
@@ -40,8 +39,7 @@ impl HexagramGenerator {
                 0 | 1 => LineType::Yang,
                 2 | 3 => LineType::Yin,
                 _ => unreachable!(),
-            })
-            .collect();
+            });
         Hexagram::from_lines(lines)
     }
 

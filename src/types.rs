@@ -20,25 +20,30 @@ impl ops::Not for LineType {
 }
 
 /// I Ching's hexagram consiting of six lines represented by [`LineType`]
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub struct Hexagram {
-    lines: Vec<LineType>,
+    lines: [LineType; 6],
 }
 
 impl Hexagram {
     /// Create a new hexagram with all the lines set to `LineType::Yang`.
     pub fn new() -> Self {
         Self {
-            lines: vec![LineType::Yang; 6],
+            lines: [LineType::Yang; 6],
         }
     }
 
     /// Build hexagram from it's lines
     ///
     /// # Panics
-    /// Panics if lines.len() != 6
-    pub fn from_lines(lines: Vec<LineType>) -> Self {
-        debug_assert_eq!(lines.len(), 6);
+    /// Panics if lines_iter.count() != 6
+    pub fn from_lines(lines_iter: impl IntoIterator<Item = LineType>) -> Self {
+        let mut iter = lines_iter.into_iter();
+        let mut lines = [LineType::Yang; 6];
+        for i in 0..6 {
+            lines[i] = iter.next().unwrap();
+        }
+        assert!(iter.take(1).count() == 0);
         Self { lines }
     }
 
