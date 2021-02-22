@@ -1,20 +1,21 @@
 use std::fmt::Display;
 use std::ops;
+use yew::prelude::*;
 
-/// I Ching's hexagram's line type
+/// I Ching's hexagram's line
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
-pub enum LineType {
+pub enum Line {
     Yang, // ======
     Yin,  // ==  ==
 }
 
-impl ops::Not for LineType {
-    type Output = LineType;
+impl ops::Not for Line {
+    type Output = Line;
 
     fn not(self) -> Self::Output {
         match self {
-            LineType::Yang => LineType::Yin,
-            LineType::Yin => LineType::Yang,
+            Line::Yang => Line::Yin,
+            Line::Yin => Line::Yang,
         }
     }
 }
@@ -22,14 +23,14 @@ impl ops::Not for LineType {
 /// I Ching's hexagram consiting of six lines represented by [`LineType`]
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub struct Hexagram {
-    lines: [LineType; 6],
+    lines: [Line; 6],
 }
 
 impl Hexagram {
     /// Create a new hexagram with all the lines set to `LineType::Yang`.
     pub fn new() -> Self {
         Self {
-            lines: [LineType::Yang; 6],
+            lines: [Line::Yang; 6],
         }
     }
 
@@ -37,9 +38,9 @@ impl Hexagram {
     ///
     /// # Panics
     /// Panics if lines_iter.count() != 6
-    pub fn from_lines(lines_iter: impl IntoIterator<Item = LineType>) -> Self {
+    pub fn from_lines(lines_iter: impl IntoIterator<Item = Line>) -> Self {
         let mut iter = lines_iter.into_iter();
-        let mut lines = [LineType::Yang; 6];
+        let mut lines = [Line::Yang; 6];
         for i in 0..6 {
             lines[i] = iter.next().unwrap();
         }
@@ -48,13 +49,13 @@ impl Hexagram {
     }
 
     /// Iterator over lines from top to bottm.
-    pub fn lines(&self) -> impl DoubleEndedIterator<Item = LineType> + '_ {
+    pub fn lines(&self) -> impl DoubleEndedIterator<Item = Line> + '_ {
         self.lines.iter().copied()
     }
 
     /// Set type of the given line. `true` is returned if it's value actually,
     /// otherwise `false`.
-    pub fn set_line(&mut self, i: usize, line_type: LineType) -> bool {
+    pub fn set_line(&mut self, i: usize, line_type: Line) -> bool {
         if self.lines[i] != line_type {
             self.lines[i] = line_type;
             return true;
@@ -77,8 +78,8 @@ impl Hexagram {
         self.lines
             .iter()
             .map(|t| match t {
-                LineType::Yang => 1,
-                LineType::Yin => 0,
+                Line::Yang => 1,
+                Line::Yin => 0,
             })
             .fold(0, |id, d| id * 2 + d)
     }
@@ -108,6 +109,34 @@ impl Display for Hexagram {
 impl Default for Hexagram {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+impl Renderable for Line {
+    fn render(&self) -> Html {
+        match self {
+            Line::Yang => html! {
+                <div class="yang_line"></div>
+            },
+            Line::Yin => html! {
+                <div class="yin_line">
+                    <div class="filled"></div>
+                    <div class="empty"></div>
+                    <div class="filled"></div>
+                </div>
+            },
+        }
+    }
+}
+
+impl Renderable for Hexagram {
+    fn render(&self) -> Html {
+        let render_line = |line: Line| html! { <li>{ line.render() }</li> };
+        html! {
+            <ul class="hexagram">
+                {for self.lines().map(render_line)}
+            </ul>
+        }
     }
 }
 

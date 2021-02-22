@@ -2,7 +2,7 @@ use rand::prelude::*;
 use std::iter;
 use yew::prelude::*;
 
-use crate::types::{Hexagram, LineType};
+use crate::components::hexagram::{Hexagram, Line};
 
 pub struct HexagramGenerator {
     coin_drops: Vec<bool>,
@@ -20,26 +20,24 @@ impl HexagramGenerator {
     }
 
     fn get_present_hexagram(&self) -> Hexagram {
-        let lines = self
-            .coin_drops
-            .chunks_exact(3)
-            .map(|drops| match drops.iter().filter(|&&b| b).count() {
-                1 | 3 => LineType::Yang,
-                0 | 2 => LineType::Yin,
+        let lines = self.coin_drops.chunks_exact(3).map(|drops| {
+            match drops.iter().filter(|&&b| b).count() {
+                1 | 3 => Line::Yang,
+                0 | 2 => Line::Yin,
                 _ => unreachable!(),
-            });
+            }
+        });
         Hexagram::from_lines(lines)
     }
 
     fn get_future_hexagram(&self) -> Hexagram {
-        let lines = self
-            .coin_drops
-            .chunks_exact(3)
-            .map(|drops| match drops.iter().filter(|&&b| b).count() {
-                0 | 1 => LineType::Yang,
-                2 | 3 => LineType::Yin,
+        let lines = self.coin_drops.chunks_exact(3).map(|drops| {
+            match drops.iter().filter(|&&b| b).count() {
+                0 | 1 => Line::Yang,
+                2 | 3 => Line::Yin,
                 _ => unreachable!(),
-            });
+            }
+        });
         Hexagram::from_lines(lines)
     }
 
@@ -59,6 +57,9 @@ pub enum Msg {
 #[derive(Debug, Clone, Properties)]
 pub struct Props {
     pub oninput: Callback<(Hexagram, Hexagram)>,
+
+    #[prop_or_default]
+    pub id: String,
 }
 
 impl Component for HexagramGenerator {
@@ -94,7 +95,10 @@ impl Component for HexagramGenerator {
         let render_row = |row: &[bool]| html! {<tr>{for row.iter().map(render_cell)}</tr>};
         let rows = self.coin_drops.chunks(3).map(render_row);
         html! {
-            <div class="hexagram_generator" onclick=self.link.callback(|_| Msg::Generate)>
+            <div
+             onclick=self.link.callback(|_| Msg::Generate)
+             class="hexagram_generator"
+             id={ self.props.id.clone() }>
                 <table>{for rows}</table>
             </div>
         }

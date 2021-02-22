@@ -1,10 +1,8 @@
 #![allow(dead_code)]
 
 mod components;
-mod types;
 
-use components::{HexagramDisplay, HexagramGenerator};
-use types::Hexagram;
+use components::{Display, Hexagram, HexagramGenerator, HexagramDisplay};
 use yew::prelude::*;
 
 struct Model {
@@ -56,13 +54,15 @@ impl Component for Model {
     fn view(&self) -> Html {
         html! {
             <div id="content">
-                <table>
-                    <tr>
-                        <td><HexagramGenerator oninput=self.link.callback(|(phex, fhex)| Msg::SetHexagrams(phex, fhex))/></td>
-                        <td><HexagramDisplay hexagram={self.present_hexagram.clone()}/></td>
-                        <td><HexagramDisplay hexagram={self.future_hexagram.clone()}/></td>
-                    </tr>
-                </table>
+                <HexagramGenerator
+                 oninput=self.link.callback(|(phex, fhex)| Msg::SetHexagrams(phex, fhex)),
+                 id="hexagram_generator"/>
+                <HexagramDisplay
+                 hex={ self.present_hexagram.clone() },
+                 id="future_hexagram"/>
+                <HexagramDisplay
+                 hex={ self.future_hexagram.clone() },
+                 id="future_hexagram"/>
             </div>
         }
     }
