@@ -3,6 +3,8 @@
 
 mod components;
 
+use std::mem;
+
 use components::{Display, Hexagram, HexagramDisplay, HexagramGenerator};
 use enum_map::{enum_map, Enum, EnumMap};
 use yew::prelude::*;
@@ -66,18 +68,25 @@ impl Component for Model {
     }
 
     fn view(&self) -> Html {
+        let (mut present_hex_class, mut future_hex_class) = ("selected_hexagram", "");
+        if let HexagramType::Future = self.info_hexagram {
+            mem::swap(&mut present_hex_class, &mut future_hex_class);
+        }
+
         html! {
             <div id="content">
                 <div id="hexagram_input">
                     <HexagramGenerator
                         oninput=self.link.callback(|(phex, fhex)| Msg::SetHexagrams(phex, fhex)),
                         id="hexagram_generator"/>
-                    <div onclick=self.link.callback(|_| Msg::SetInfoHexagram(HexagramType::Present))>
-                    <HexagramDisplay
-                        hex={ self.hexagrams[HexagramType::Present].clone() },
-                        id="present_hexagram"/>
+                    <div onclick=self.link.callback(|_| Msg::SetInfoHexagram(HexagramType::Present))
+                        class={ present_hex_class }>
+                        <HexagramDisplay
+                            hex={ self.hexagrams[HexagramType::Present].clone() },
+                            id="present_hexagram"/>
                     </div>
-                    <div onclick=self.link.callback(|_| Msg::SetInfoHexagram(HexagramType::Future))>
+                    <div onclick=self.link.callback(|_| Msg::SetInfoHexagram(HexagramType::Future))
+                        class={ future_hex_class }>
                         <HexagramDisplay
                             hex={ self.hexagrams[HexagramType::Future].clone() },
                             id="future_hexagram"/>
