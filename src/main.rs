@@ -44,13 +44,14 @@ impl Component for Model {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::SetHexagram(hex_type, hex) => {
-                self.hexagrams[hex_type] = hex;
-                true
+            Msg::SetHexagram(hex_type, mut hex) => {
+                mem::swap(&mut self.hexagrams[hex_type], &mut hex);
+                self.hexagrams[hex_type] != hex
             }
             Msg::SetHexagrams(present_hex, future_hex) => {
                 self.update(Msg::SetHexagram(HexagramType::Present, present_hex));
                 self.update(Msg::SetHexagram(HexagramType::Future, future_hex));
+                self.update(Msg::SetInfoHexagram(HexagramType::Present));
                 true
             }
             Msg::SetInfoHexagram(hex) => {
