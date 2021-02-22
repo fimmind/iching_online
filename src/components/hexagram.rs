@@ -98,6 +98,13 @@ impl Hexagram {
     pub fn name(&self) -> &'static str {
         SIGNS_CHRS[self.bin_id()].2
     }
+
+    pub fn description(&self) -> Html {
+        // TODO
+        html! {
+            { format!("Description for {} {}", self.id(), self.name()) }
+        }
+    }
 }
 
 impl Display for Hexagram {
