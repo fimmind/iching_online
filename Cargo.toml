@@ -7,3 +7,4 @@ edition = "2018"
 [dependencies]
 yew = "0.17.4"
 rand = {version = "0.7", features = ["wasm-bindgen"]}
+enum-map = "0.6.4"

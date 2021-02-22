@@ -4,24 +4,23 @@
 mod components;
 
 use components::{Display, Hexagram, HexagramDisplay, HexagramGenerator};
+use enum_map::{enum_map, Enum, EnumMap};
 use yew::prelude::*;
 
 struct Model {
-    present_hexagram: Hexagram,
-    future_hexagram: Hexagram,
+    hexagrams: EnumMap<HexagramType, Hexagram>,
     info_hexagram: HexagramType,
     link: ComponentLink<Self>,
 }
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Enum)]
 enum HexagramType {
     Present,
     Future,
 }
 
 enum Msg {
-    SetPresentHexagram(Hexagram),
-    SetFutureHexagram(Hexagram),
+    SetHexagram(HexagramType, Hexagram),
     SetHexagrams(Hexagram, Hexagram),
     SetInfoHexagram(HexagramType),
 }
@@ -32,8 +31,10 @@ impl Component for Model {
 
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
         Self {
-            present_hexagram: Hexagram::new(),
-            future_hexagram: Hexagram::new(),
+            hexagrams: enum_map! {
+                HexagramType::Present => Hexagram::new(),
+                HexagramType::Future => Hexagram::new(),
+            },
             info_hexagram: HexagramType::Present,
             link,
         }
@@ -41,23 +42,19 @@ impl Component for Model {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::SetPresentHexagram(hex) => {
-                self.present_hexagram = hex;
-                true
-            }
-            Msg::SetFutureHexagram(hex) => {
-                self.future_hexagram = hex;
+            Msg::SetHexagram(hex_type, hex) => {
+                self.hexagrams[hex_type] = hex;
                 true
             }
             Msg::SetHexagrams(present_hex, future_hex) => {
-                self.update(Msg::SetPresentHexagram(present_hex));
-                self.update(Msg::SetFutureHexagram(future_hex));
+                self.update(Msg::SetHexagram(HexagramType::Present, present_hex));
+                self.update(Msg::SetHexagram(HexagramType::Future, future_hex));
                 true
             }
             Msg::SetInfoHexagram(hex) => {
                 if self.info_hexagram != hex {
                     self.info_hexagram = hex;
-                    return true
+                    return true;
                 }
                 false
             }
@@ -69,28 +66,26 @@ impl Component for Model {
     }
 
     fn view(&self) -> Html {
-        let info_hex = match self.info_hexagram {
-            HexagramType::Present => &self.present_hexagram,
-            HexagramType::Future => &self.future_hexagram,
-        };
         html! {
             <div id="content">
-                <HexagramGenerator
-                 oninput=self.link.callback(|(phex, fhex)| Msg::SetHexagrams(phex, fhex)),
-                 id="hexagram_generator"/>
-                <div onclick=self.link.callback(|_| Msg::SetInfoHexagram(HexagramType::Present))>
+                <div id="hexagram_input">
+                    <HexagramGenerator
+                        oninput=self.link.callback(|(phex, fhex)| Msg::SetHexagrams(phex, fhex)),
+                        id="hexagram_generator"/>
+                    <div onclick=self.link.callback(|_| Msg::SetInfoHexagram(HexagramType::Present))>
                     <HexagramDisplay
-                    hex={ self.present_hexagram.clone() },
-                    id="present_hexagram"/>
-                </div>
-                <div onclick=self.link.callback(|_| Msg::SetInfoHexagram(HexagramType::Future))>
-                    <HexagramDisplay
-                    hex={ self.future_hexagram.clone() },
-                    id="future_hexagram"/>
+                        hex={ self.hexagrams[HexagramType::Present].clone() },
+                        id="present_hexagram"/>
+                    </div>
+                    <div onclick=self.link.callback(|_| Msg::SetInfoHexagram(HexagramType::Future))>
+                        <HexagramDisplay
+                            hex={ self.hexagrams[HexagramType::Future].clone() },
+                            id="future_hexagram"/>
+                    </div>
                 </div>
 
                 <Display id="hexagram_info">
-                    { info_hex.description() }
+                    { self.hexagrams[self.info_hexagram].description() }
                 </Display>
             </div>
         }

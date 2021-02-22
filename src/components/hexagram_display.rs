@@ -38,9 +38,9 @@ impl Component for HexagramDisplay {
                 <div class="hexagram_display">
                     { hex.render() }
 
-                    <div class="hexagram_name">
+                    <p class="hexagram_name">
                     { format!("{} {}", hex.id(), hex.name()) }
-                    </div>
+                    </p>
                 </div>
             </Display>
         }
