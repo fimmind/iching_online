@@ -11,7 +11,7 @@ use yew::prelude::*;
 
 struct Model {
     hexagrams: EnumMap<HexagramType, Hexagram>,
-    info_hexagram: HexagramType,
+    active_hexagram: HexagramType,
     link: ComponentLink<Self>,
 }
 
@@ -24,7 +24,7 @@ enum HexagramType {
 enum Msg {
     SetHexagram(HexagramType, Hexagram),
     SetHexagrams(Hexagram, Hexagram),
-    SetInfoHexagram(HexagramType),
+    SetActiveHexagram(HexagramType),
 }
 
 impl Component for Model {
@@ -37,7 +37,7 @@ impl Component for Model {
                 HexagramType::Present => Hexagram::new(),
                 HexagramType::Future => Hexagram::new(),
             },
-            info_hexagram: HexagramType::Present,
+            active_hexagram: HexagramType::Present,
             link,
         }
     }
@@ -51,12 +51,12 @@ impl Component for Model {
             Msg::SetHexagrams(present_hex, future_hex) => {
                 self.update(Msg::SetHexagram(HexagramType::Present, present_hex));
                 self.update(Msg::SetHexagram(HexagramType::Future, future_hex));
-                self.update(Msg::SetInfoHexagram(HexagramType::Present));
+                self.update(Msg::SetActiveHexagram(HexagramType::Present));
                 true
             }
-            Msg::SetInfoHexagram(hex) => {
-                if self.info_hexagram != hex {
-                    self.info_hexagram = hex;
+            Msg::SetActiveHexagram(hex) => {
+                if self.active_hexagram != hex {
+                    self.active_hexagram = hex;
                     return true;
                 }
                 false
@@ -69,8 +69,9 @@ impl Component for Model {
     }
 
     fn view(&self) -> Html {
-        let (mut present_hex_class, mut future_hex_class) = ("selected_hexagram", "");
-        if let HexagramType::Future = self.info_hexagram {
+        let (mut present_hex_class, mut future_hex_class) =
+            ("active_hexagram", "inactive_hexagram");
+        if let HexagramType::Future = self.active_hexagram {
             mem::swap(&mut present_hex_class, &mut future_hex_class);
         }
 
@@ -80,13 +81,13 @@ impl Component for Model {
                     <HexagramGenerator
                         oninput=self.link.callback(|(phex, fhex)| Msg::SetHexagrams(phex, fhex)),
                         id="hexagram_generator"/>
-                    <div onclick=self.link.callback(|_| Msg::SetInfoHexagram(HexagramType::Present))
+                    <div onclick=self.link.callback(|_| Msg::SetActiveHexagram(HexagramType::Present))
                         class={ present_hex_class }>
                         <HexagramDisplay
                             hex={ self.hexagrams[HexagramType::Present].clone() },
                             id="present_hexagram"/>
                     </div>
-                    <div onclick=self.link.callback(|_| Msg::SetInfoHexagram(HexagramType::Future))
+                    <div onclick=self.link.callback(|_| Msg::SetActiveHexagram(HexagramType::Future))
                         class={ future_hex_class }>
                         <HexagramDisplay
                             hex={ self.hexagrams[HexagramType::Future].clone() },
@@ -95,7 +96,7 @@ impl Component for Model {
                 </div>
 
                 <Display id="hexagram_info">
-                    { self.hexagrams[self.info_hexagram].description() }
+                    { self.hexagrams[self.active_hexagram].description() }
                 </Display>
             </div>
         }

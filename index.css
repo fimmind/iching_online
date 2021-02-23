@@ -78,11 +78,6 @@
   padding-bottom: 0.6cm;
 }
 
-.selected_hexagram .display {
-  transform: scale(0.98);
-  box-shadow: 0px 0px 1.5mm lightgray;
-}
-
 #content {
   margin: 0 auto;
   width: min-content;
@@ -101,7 +96,13 @@
   cursor: pointer;
 }
 
-#present_hexagram, #future_hexagram {
+.active_hexagram .display {
+  transform: scale(0.98);
+  box-shadow: 0px 0px 1mm lightgray;
+  cursor: default;
+}
+
+.inactive_hexagram .display {
   cursor: pointer;
 }
 
