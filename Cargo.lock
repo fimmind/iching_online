@@ -297,6 +297,7 @@ name = "iching_online"
 version = "0.1.0"
 dependencies = [
  "enum-map",
+ "lipsum",
  "rand",
  "yew",
 ]
@@ -337,6 +338,16 @@ name = "libc"
 version = "0.2.86"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b7282d924be3275cec7f6756ff4121987bc6481325397dde6ba3e7802b1a8b1c"
+
+[[package]]
+name = "lipsum"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "27bdfcb80998b71ab4141f3725b990c923bccebbba596d053a66c083c04f8b9c"
+dependencies = [
+ "rand",
+ "rand_chacha",
+]
 
 [[package]]
 name = "log"

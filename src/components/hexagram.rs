@@ -1,4 +1,6 @@
+use lipsum::lipsum;
 use std::fmt::Display;
+use std::iter::repeat_with;
 use std::ops;
 use yew::prelude::*;
 
@@ -101,28 +103,23 @@ impl Hexagram {
 
     pub fn description(&self) -> Html {
         // TODO
+        static mut DESCRIPTIONS: Option<Vec<Vec<String>>> = None;
+        let description;
+        unsafe {
+            if DESCRIPTIONS.is_none() {
+                DESCRIPTIONS = Some(
+                    repeat_with(|| repeat_with(|| lipsum(50)).take(4).collect())
+                        .take(64)
+                        .collect(),
+                )
+            }
+            description = &DESCRIPTIONS.as_ref().unwrap()[self.id() - 1];
+        }
+
         html! {
             <div class="hexagram_description">
                 <h2>{ format!("Description for {} {}", self.id(), self.name()) }</h2>
-                <p>
-                {
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris \
-                    eget elit nisl. Suspendisse potenti. Suspendisse potenti. \
-                    Quisque mollis scelerisque massa vel consectetur. In dignissim \
-                    erat eget lacus semper, vitae interdum est egestas. Maecenas \
-                    libero purus, maximus ut dolor tristique, dignissim finibus \
-                    dolor. Suspendisse vel tincidunt nisl.  Nulla in fringilla \
-                    dolor. Nulla ut leo ultricies, finibus diam id, sodales augue. \
-                    Nulla vehicula maximus elit, eget viverra lorem faucibus in. \
-                    Aenean vel tincidunt odio.  Vestibulum cursus, elit eget congue \
-                    consequat, tortor justo interdum ante, non sollicitudin lorem \
-                    risus eget turpis.  Cras at lorem eu est viverra varius eget sit \
-                    amet quam.  Morbi pharetra tortor rhoncus lorem pulvinar \
-                    lobortis.  Curabitur metus turpis, mattis at finibus suscipit, \
-                    finibus eu felis. Integer mollis suscipit mauris, sed \
-                    scelerisque massa aliquam vestibulum."
-                }
-                </p>
+                { for description.iter().map(|p| html! { <p>{ p }</p> }) }
             </div>
         }
     }

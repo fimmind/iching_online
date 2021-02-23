@@ -91,8 +91,7 @@ html {
 
 #hexagram_input {
   display: flex;
-  padding-right: 1cm;
-  padding-left: 1cm;
+  padding: 0 3cm;
 }
 
 #hexagram_generator {
@@ -114,4 +113,8 @@ html {
 #hexagram_info {
   font-size: 15pt;
   text-align: justify;
+}
+
+#hexagram_info p {
+  padding: 0.3cm;
 }
