@@ -37,7 +37,7 @@ html {
 }
 
 .hexagram_name {
-  font-size: 17pt;
+  font-size: x-large;
 }
 
 .yin_line, .yang_line {
@@ -111,7 +111,7 @@ html {
 }
 
 #hexagram_info {
-  font-size: 15pt;
+  font-size: large;
   text-align: justify;
 }
 
