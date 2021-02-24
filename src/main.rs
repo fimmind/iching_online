@@ -95,9 +95,9 @@ impl Component for Model {
                     </div>
                 </div>
 
-                <Display id="hexagram_info">
+                <div id="hexagram_info">
                     { self.hexagrams[self.active_hexagram].description() }
-                </Display>
+                </div>
             </div>
         }
     }
