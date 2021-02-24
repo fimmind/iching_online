@@ -1,4 +1,4 @@
-use lipsum::lipsum;
+use lipsum::lipsum_words;
 use std::fmt::Display;
 use std::iter::repeat_with;
 use std::ops;
@@ -108,7 +108,7 @@ impl Hexagram {
         unsafe {
             if DESCRIPTIONS.is_none() {
                 DESCRIPTIONS = Some(
-                    repeat_with(|| repeat_with(|| lipsum(50)).take(4).collect())
+                    repeat_with(|| repeat_with(|| lipsum_words(50)).take(4).collect())
                         .take(64)
                         .collect(),
                 )
