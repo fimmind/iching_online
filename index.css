@@ -85,13 +85,14 @@ html {
 
 #content {
   margin: 0 auto;
-  width: min-content;
-  height: min-content;
+  max-width: 18cm;
+  width: 100%;
 }
 
 #hexagram_input {
   display: flex;
-  padding: 0 1cm;
+  margin: 0 auto;
+  width: min-content;
 }
 
 #hexagram_generator {
